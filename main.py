@@ -1,6 +1,10 @@
 import discord
 from discord.ext import commands
-import os  # ✅ เพิ่มตรงนี้เพื่อใช้ Environment Variable
+import os
+
+# ✅ เพิ่มส่วนนี้
+from keep_alive import server_on
+server_on()  # เรียกใช้งาน Flask Server
 
 intents = discord.Intents.default()
 intents.members = True
@@ -9,10 +13,9 @@ intents.reactions = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# ✅ ตั้งค่า ID ให้ตรงกับของคุณ
-REACTION_MESSAGE_ID = 1379067822843494590  # แทนด้วย Message ID ที่ให้กดอิโมจิ
-ROLE_ID = 1378975589133717524             # แทนด้วย Role ID ที่จะแจก
-LOG_CHANNEL_ID = 1378978265485541376      # แทนด้วย Channel ID ที่จะส่งประวัติ
+REACTION_MESSAGE_ID = 1379067822843494590
+ROLE_ID = 1378975589133717524
+LOG_CHANNEL_ID = 1378978265485541376
 
 @bot.event
 async def on_ready():
@@ -39,7 +42,6 @@ async def on_raw_reaction_add(payload):
         await member.add_roles(role, reason="Reaction role assignment")
         print(f"🎉 มอบยศ {role.name} ให้กับ {member.name}")
 
-        # ส่ง Embed บันทึกไปยังห้อง log
         log_channel = bot.get_channel(LOG_CHANNEL_ID)
         if log_channel:
             embed = discord.Embed(
@@ -58,5 +60,5 @@ async def on_raw_reaction_add(payload):
     except Exception as e:
         print(f"⚠️ เกิดข้อผิดพลาด: {e}")
 
-# ✅ เปลี่ยนให้ใช้ Token จาก Environment Variable
+# ✅ ใช้ Token จาก Environment Variable
 bot.run(os.environ["DISCORD_TOKEN"])
